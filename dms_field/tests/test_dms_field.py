@@ -1,5 +1,5 @@
 # Copyright 2020 Creu Blanca
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo.exceptions import ValidationError
 from odoo.tests import SavepointCase
@@ -9,25 +9,18 @@ class TestDmsField(SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.access_group = cls.env["dms.access.group"].create(
-            {
-                "name": "Access Group",
-                "group_ids": [(4, cls.env.ref("base.group_user").id)],
-            }
-        )
         cls.storage = cls.env["dms.storage"].create(
             {
                 "name": "DMS Storage",
                 "model_ids": [(4, cls.env.ref("base.model_res_partner").id)],
                 "save_type": "database",
-                "field_default_group_id": cls.access_group.id,
             }
         )
         cls.partner = cls.env["res.partner"].create({"name": "DEMO Partner"})
 
     def _create_directory_vals(self, record):
         return {
-            "storage_id": self.storage.id,
+            "root_storage_id": self.storage.id,
             "is_root_directory": True,
             "name": record.display_name,
             "res_model": record._name,
@@ -43,7 +36,7 @@ class TestDmsField(SavepointCase):
         with self.assertRaises(ValidationError):
             self.env["dms.directory"].create(
                 {
-                    "storage_id": self.storage.id,
+                    "root_storage_id": self.storage.id,
                     "is_root_directory": True,
                     "name": "Test Directory",
                 }
@@ -71,7 +64,7 @@ class TestDmsField(SavepointCase):
         self.storage.write({"model_ids": [(5, False)]})
         self.env["dms.directory"].create(
             {
-                "storage_id": self.storage.id,
+                "root_storage_id": self.storage.id,
                 "is_root_directory": True,
                 "name": "First Directory",
             }
@@ -89,9 +82,8 @@ class TestDmsField(SavepointCase):
     def test_creation_wizard(self):
         self.assertFalse(self.partner.dms_directory_ids)
         self.env["dms.add.directory.record"].with_context(
-            default_res_id=self.partner.id,
-            default_res_model=self.partner._name,
+            default_res_id=self.partner.id, default_res_model=self.partner._name,
         ).create({"storage_id": self.storage.id}).create_directory()
         self.partner.refresh()
         self.assertTrue(self.partner.dms_directory_ids)
-        self.assertEqual(self.storage, self.partner.dms_directory_ids.storage_id)
+        self.assertEqual(self.storage, self.partner.dms_directory_ids.root_storage_id)

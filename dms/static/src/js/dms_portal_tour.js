@@ -1,13 +1,15 @@
-odoo.define("dms.tour", function (require) {
+odoo.define("dms.tour", function(require) {
     "use strict";
 
     var tour = require("web_tour.tour");
+    var base = require("web_editor.base");
 
     tour.register(
         "dms_portal_mail_tour",
         {
             test: true,
             url: "/my",
+            wait_for: base.ready(),
         },
         [
             {
@@ -31,6 +33,7 @@ odoo.define("dms.tour", function (require) {
         {
             test: true,
             url: "/my",
+            wait_for: base.ready(),
         },
         [
             {
@@ -54,4 +57,5 @@ odoo.define("dms.tour", function (require) {
             },
         ]
     );
+    return {};
 });

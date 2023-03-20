@@ -4,7 +4,7 @@
     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
  **********************************************************************************/
 
-odoo.define("dms.FileKanbanController", function (require) {
+odoo.define("dms.FileKanbanController", function(require) {
     "use strict";
 
     var KanbanController = require("web.KanbanController");
@@ -13,14 +13,14 @@ odoo.define("dms.FileKanbanController", function (require) {
     var DragDrop = require("dms.DragDrop");
 
     var FileKanbanController = KanbanController.extend(
-        _.extend({}, DragDrop, {
+        _.extend(DragDrop, {
             custom_events: _.extend({}, KanbanController.prototype.custom_events, {
                 preview_file: "_onPreviewFile",
             }),
-            _onPreviewFile: function (ev) {
+            _onPreviewFile: function(ev) {
                 var record = this.model.get(ev.data.id, {raw: true});
                 var fieldName = "content";
-                var mimetype = record.data.mimetype;
+                var mimetype = record.data.res_mimetype;
                 var type = mimetype.split("/").shift();
                 if (
                     type === "video" ||
@@ -31,9 +31,9 @@ odoo.define("dms.FileKanbanController", function (require) {
                         this,
                         [
                             {
-                                mimetype: record.data.mimetype,
+                                mimetype: record.data.res_mimetype,
                                 id: record.data.id,
-                                fileType: this.mimetype_value,
+                                fileType: record.data.res_mimetype,
                                 name: record.data.name,
                             },
                         ],

@@ -2,7 +2,6 @@
 <!--
 
     Copyright 2017-2019 MuK IT GmbH
-    Copyright 2021 Tecnativa - Víctor Martínez
     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
   -->
@@ -67,15 +66,6 @@
                         context="{'group_by':'directory_id'}"
                     />
                 </group>
-                <searchpanel>
-                    <field
-                        name="directory_id"
-                        icon="fa-folder"
-                        enable_counters="1"
-                        operator="="
-                    />
-                    <field name="category_id" icon="fa-users" enable_counters="1" />
-                </searchpanel>
             </search>
         </field>
     </record>
@@ -93,8 +83,9 @@
                 <field name="name" />
                 <field name="color" />
                 <field name="active" />
-                <field name="mimetype" />
+                <field name="custom_thumbnail_small" />
                 <field name="icon_url" />
+                <field name="res_mimetype" />
                 <field name="create_uid" />
                 <field name="write_date" />
                 <field name="locked_by" />
@@ -224,15 +215,20 @@
                             <div class="oe_kanban_content">
                                 <div class="o_kanban_image">
                                     <div class="o_kanban_image_wrapper">
-                                        <a
-                                            class="o_kanban_dms_file_preview"
-                                            t-att-data-id="widget.db_id"
+                                        <t
+                                            t-if="record.custom_thumbnail_small.raw_value"
                                         >
+                                            <img
+                                                t-att-src="kanban_image('dms.file', 'custom_thumbnail_small', record.id.raw_value)"
+                                                alt="Custom thumbnail"
+                                            />
+                                        </t>
+                                        <t t-else="">
                                             <img
                                                 t-att-src="record.icon_url.raw_value"
                                                 alt="Icon"
                                             />
-                                        </a>
+                                        </t>
                                     </div>
                                 </div>
                                 <div class="o_kanban_details">
@@ -240,6 +236,10 @@
                                         <div
                                             class="o_kanban_record_title o_text_overflow"
                                         >
+                                            <a
+                                                class="o_kanban_dms_file_preview fa fa-search"
+                                                t-att-data-id="widget.db_id"
+                                            />
                                             <field name="name" />
                                         </div>
                                         <div class="o_kanban_record_body">
@@ -267,7 +267,7 @@
                                                     />
                                                 </span>
                                                 <img
-                                                    t-att-src="kanban_image('res.users', 'image_128', record.create_uid.raw_value)"
+                                                    t-att-src="kanban_image('res.users', 'image_small', record.create_uid.raw_value)"
                                                     t-att-alt="record.create_uid.value"
                                                     class="oe_kanban_avatar"
                                                 />
@@ -279,25 +279,20 @@
                         </div>
                     </t>
                 </templates>
+                <searchpanel>
+                    <field
+                        name="directory_id"
+                        icon="fa-folder"
+                        context="{'directory_short_name': True}"
+                    />
+                    <field
+                        name="tag_ids"
+                        select="multi"
+                        icon="fa-tag"
+                        groupby="category_id"
+                    />
+                </searchpanel>
             </kanban>
-        </field>
-    </record>
-    <!-- Base view that can be overwritten by other modules as needed !-->
-    <record id="view_dms_file_kanban_wizard_selection" model="ir.ui.view">
-        <field name="name">dms_file.kanban.wizard.selection</field>
-        <field name="model">dms.file</field>
-        <field name="inherit_id" ref="dms.view_dms_file_kanban" />
-        <field name="priority">9999</field>
-        <field name="mode">primary</field>
-        <field name="arch" type="xml">
-            <kanban position="attributes">
-                <attribute name="banner_route" />
-                <attribute name="class">o_kanban_mobile</attribute>
-            </kanban>
-            <xpath expr="//div[hasclass('o_dropdown_kanban')]" position="replace" />
-            <xpath expr="//div[hasclass('oe_kanban_bottom_right')]" position="replace">
-                <div class="oe_kanban_bottom_right" />
-            </xpath>
         </field>
     </record>
     <record id="view_dms_file_tree" model="ir.ui.view">
@@ -309,20 +304,15 @@
                 js_class="file_list"
                 decoration-warning="not active"
                 decoration-muted="(is_locked and not is_lock_editor)"
-                multi_edit="1"
             >
                 <field name="active" invisible="1" />
                 <field name="is_locked" invisible="1" />
                 <field name="is_lock_editor" invisible="1" />
                 <field name="name" />
                 <field name="write_date" />
-                <field name="size" widget="integer" />
-                <field name="mimetype" />
-                <field
-                    name="tag_ids"
-                    widget="many2many_tags"
-                    options="{'color_field': 'color', 'no_create_edit': True}"
-                />
+                <field name="size" />
+                <field name="res_mimetype" />
+                <field name="path_names" widget="path_names" string="Path" />
             </tree>
         </field>
     </record>
@@ -375,19 +365,17 @@
                     />
                 </header>
                 <sheet>
-                    <widget
-                        name="web_ribbon"
-                        title="Archived"
-                        bg_color="bg-danger"
-                        attrs="{'invisible': [('active', '=', True)]}"
-                    />
                     <div class="oe_button_box" name="button_box" />
                     <field
-                        name="image_1920"
+                        name="thumbnail_medium"
                         widget="image"
-                        class="oe_avatar"
-                        nolabel="1"
-                        options="{'image_preview': 'image_128'}"
+                        class="oe_avatar oe_read_only"
+                    />
+                    <field
+                        name="custom_thumbnail"
+                        widget="image"
+                        class="oe_avatar oe_edit_only"
+                        options="{'preview_image': 'thumbnail_medium'}"
                     />
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" />
@@ -409,13 +397,12 @@
                             <field
                                 name="content"
                                 filename="name"
-                                mimetype="mimetype"
                                 widget="preview_binary"
                             />
                         </group>
                         <group>
                             <field name="extension" />
-                            <field name="mimetype" />
+                            <field name="res_mimetype" />
                         </group>
                     </group>
                     <group name="settings">
@@ -499,9 +486,9 @@
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="activity_ids" />
-                    <field name="message_ids" />
+                    <field name="message_follower_ids" widget="mail_followers" />
+                    <field name="activity_ids" widget="mail_activity" />
+                    <field name="message_ids" widget="mail_thread" />
                 </div>
             </form>
         </field>
@@ -531,18 +518,6 @@
             </p>
         </field>
     </record>
-    <!-- Base action to be called when a file selector is to be used !-->
-    <record id="action_dms_file_wizard_selector" model="ir.actions.act_window">
-        <field name="name">Files</field>
-        <field name="res_model">dms.file</field>
-        <field name="target">new</field>
-        <field name="view_mode">kanban</field>
-        <field name="context">{'create': False}</field>
-        <field
-            name="view_ids"
-            eval="[(5, 0, 0),(0, 0, {'view_mode': 'kanban', 'view_id': ref('view_dms_file_kanban_wizard_selection')})]"
-        />
-    </record>
     <menuitem
         id="menu_dms_file"
         name="Files"
@@ -564,15 +539,6 @@
                         context="{'group_by':'storage_id'}"
                     />
                 </group>
-                <searchpanel>
-                    <field
-                        name="directory_id"
-                        icon="fa-folder"
-                        enable_counters="1"
-                        operator="="
-                    />
-                    <field name="category_id" icon="fa-users" enable_counters="1" />
-                </searchpanel>
             </search>
         </field>
     </record>
@@ -590,8 +556,8 @@
                 <field name="is_lock_editor" invisible="1" />
                 <field name="name" />
                 <field name="write_date" />
-                <field name="size" widget="integer" />
-                <field name="mimetype" />
+                <field name="content" />
+                <field name="res_mimetype" />
                 <field name="storage_id" />
                 <field name="migration" />
             </tree>

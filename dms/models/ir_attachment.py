@@ -1,4 +1,3 @@
-# Copyright 2021 Tecnativa - Víctor Martínez
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 from odoo import api, models
 
@@ -18,7 +17,7 @@ class IrAttachment(models.Model):
         return self.env["dms.directory"].search(domain)
 
     def _dms_directories_create(self):
-        items = self.sudo()._get_dms_directories(self.res_model, False)
+        items = self._get_dms_directories(self.res_model, False)
         for item in items:
             model_item = self.env[self.res_model].browse(self.res_id)
             ir_model_item = self.env["ir.model"].search(
@@ -37,7 +36,11 @@ class IrAttachment(models.Model):
 
     def _dms_operations(self):
         for attachment in self:
-            if not attachment.res_model or not attachment.res_id:
+            if (
+                attachment.type != "binary"
+                or not attachment.res_model
+                or not attachment.res_id
+            ):
                 continue
             directories = attachment._get_dms_directories(
                 attachment.res_model, attachment.res_id

@@ -1,179 +1,194 @@
 # Copyright 2017-2019 MuK IT GmbH.
 # Copyright 2020 Creu Blanca
-# Copyright 2021-2022 Tecnativa - Víctor Martínez
+# Copyright 2021 Tecnativa - Víctor Martínez
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
-import os
+import uuid
 
-from odoo.exceptions import UserError
-from odoo.tests.common import users
-from odoo.tools import mute_logger
+from odoo.exceptions import AccessError
+from odoo.tests import Form
 
-from .common import StorageDatabaseBaseCase
-
-_path = os.path.dirname(os.path.dirname(__file__))
+from .common import DocumentsBaseCase, multi_users
 
 
-class DirectoryTestCase(StorageDatabaseBaseCase):
-    def setUp(self):
-        super().setUp()
-        self.subdirectory = self.create_directory(directory=self.directory)
-        self.file.directory_id = self.subdirectory
-        self.new_storage = self.create_storage(save_type="database")
+class DirectoryTestCase(DocumentsBaseCase):
+    def _setup_test_data(self):
+        super(DirectoryTestCase, self)._setup_test_data()
+        self.directory_root_demo_01 = self.browse_ref("dms.directory_01_demo")
+        self.directory_root_demo_02 = self.browse_ref("dms.directory_02_demo")
+        self.directory_root_demo_03 = self.browse_ref("dms.directory_11_demo")
+        self.directory_sub_demo_01 = self.browse_ref("dms.directory_04_demo")
+        self.directory_sub_demo_02 = self.browse_ref("dms.directory_12_demo")
+        self.new_storage = self.create_storage(sudo=True)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_create_directory(self):
-        root_directory = self.create_directory(storage=self.storage)
+        root_directory = self.create_directory(storage=self.new_storage)
         sub_directory = self.create_directory(directory=root_directory)
-        self.assertEqual(sub_directory.storage_id.id, self.storage.id)
+        self.assertEqual(sub_directory.storage_id.id, self.new_storage.id)
         self.assertEqual(root_directory.count_directories, 1)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_copy_root_directory(self):
-        copy_root_directory = self.directory.copy()
-        copy_root_directory.flush()
+        copy_root_directory = self.directory_root_demo_03.copy()
         self.assertEqual(
-            self.directory.storage_id.id, copy_root_directory.storage_id.id
+            self.directory_root_demo_03.storage_id.id, copy_root_directory.storage_id.id
         )
         self.assertEqual(
-            self.directory.count_directories,
+            self.directory_root_demo_03.count_directories,
             copy_root_directory.count_directories,
         )
-        self.assertEqual(self.directory.count_files, copy_root_directory.count_files)
-
-    @users("dms-manager", "dms-user")
-    def test_copy_sub_directory(self):
-        copy_sub_directory = self.subdirectory.copy()
         self.assertEqual(
-            self.subdirectory.storage_id.id, copy_sub_directory.storage_id.id
+            self.directory_root_demo_03.count_files, copy_root_directory.count_files
+        )
+
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
+    def test_copy_sub_directory(self):
+        copy_sub_directory = self.directory_sub_demo_01.copy()
+        self.assertEqual(
+            self.directory_sub_demo_01.storage_id.id, copy_sub_directory.storage_id.id
         )
         self.assertEqual(
-            self.subdirectory.count_directories,
+            self.directory_sub_demo_01.count_directories,
             copy_sub_directory.count_directories,
         )
-        self.assertEqual(self.subdirectory.count_files, copy_sub_directory.count_files)
+        self.assertEqual(
+            self.directory_sub_demo_01.count_files, copy_sub_directory.count_files
+        )
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_rename_directory(self):
-        path_names = self.subdirectory.complete_name
-        self.directory.write({"name": "New Test Name %s" % self.env.user.login})
-        self.assertNotEqual(path_names, self.subdirectory.complete_name)
+        path_names = self.directory_sub_demo_01.complete_name
+        self.directory_root_demo_01.write({"name": "New Test Name"})
+        self.assertNotEqual(path_names, self.directory_sub_demo_01.complete_name)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_move_directory(self):
-        with self.assertRaises(UserError):
-            self.directory.write(
-                {
-                    "is_root_directory": False,
-                    "parent_id": self.subdirectory.id,
-                }
-            )
+        path_names = self.directory_sub_demo_01.complete_name
+        self.directory_root_demo_01.write(
+            {
+                "root_storage_id": False,
+                "is_root_directory": False,
+                "parent_id": self.directory_root_demo_02.id,
+            }
+        )
+        self.assertNotEqual(path_names, self.directory_sub_demo_01.complete_name)
 
-    @users("dms-manager", "dms-user")
-    def test_unlink_root_directory(self):
-        root_directory = self.create_directory(storage=self.storage)
-        sub_directory = self.create_directory(directory=root_directory)
-        sub_files = self.create_file(directory=sub_directory)
-        root_directory.unlink()
-        self.assertFalse(sub_directory.exists())
-        self.assertFalse(sub_files.exists())
-
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_unlink_directory(self):
-        root_directory = self.create_directory(storage=self.storage)
-        sub_directory = self.create_directory(directory=root_directory)
-        sub_files = self.create_file(directory=sub_directory)
-        sub_directory.unlink()
-        self.assertTrue(root_directory.exists())
-        self.assertFalse(sub_files.exists())
+        root_directory1 = self.create_directory(storage=self.new_storage)
+        root_directory2 = self.create_directory(storage=self.new_storage)
+        sub_directory1 = self.create_directory(directory=root_directory1)
+        sub_directory2 = self.create_directory(directory=root_directory1)
+        sub_files1 = self.create_file(directory=sub_directory1)
+        sub_files2 = self.create_file(directory=sub_directory1)
+        (root_directory1 + root_directory2).unlink()
+        self.assertFalse(sub_directory1.exists())
+        self.assertFalse(sub_directory2.exists())
+        self.assertFalse(sub_files1.exists())
+        self.assertFalse(sub_files2.exists())
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_storage(self):
-        root_directory = self.create_directory(storage=self.storage)
+        new_storage = self.create_storage(sudo=True)
+        root_directory = self.create_directory(storage=self.new_storage)
         sub_directory = self.create_directory(directory=root_directory)
-        self.assertEqual(sub_directory.storage_id.id, self.storage.id)
-        with self.assertRaises(UserError):
-            root_directory.write({"storage_id": self.new_storage.id})
+        self.assertEqual(sub_directory.storage_id.id, self.new_storage.id)
+        root_directory.write({"root_storage_id": new_storage.id})
+        self.assertEqual(sub_directory.storage_id.id, new_storage.id)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_starred(self):
-        self.directory.toggle_starred()
-        self.subdirectory.write({"starred": True})
-        starred = self.directory_model.search([("starred", "=", True)])
-        self.assertIn(self.directory.id, starred.ids)
-        self.assertIn(self.subdirectory.id, starred.ids)
+        self.directory_root_demo_01.toggle_starred()
+        self.directory_root_demo_02.write({"starred": True})
+        starred = self.directory.search([("starred", "=", True)])
+        self.assertIn(self.directory_root_demo_01.id, starred.ids)
+        self.assertIn(self.directory_root_demo_02.id, starred.ids)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_count_directories(self):
-        self.assertTrue(self.directory.count_directories)
+        self.assertTrue(self.directory_root_demo_01.count_directories)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_count_files(self):
-        self.assertTrue(self.subdirectory.count_files)
+        self.assertTrue(self.directory_sub_demo_01.count_files)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_count_elements(self):
-        self.assertTrue(self.directory.count_elements)
+        self.assertTrue(self.directory_root_demo_01.count_elements)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_count_total_directories(self):
-        self.assertTrue(self.directory.count_total_directories)
+        self.assertTrue(self.directory_root_demo_01.count_total_directories)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_count_count_total_files(self):
-        self.assertTrue(self.directory.count_total_files)
+        self.assertTrue(self.directory_root_demo_01.count_total_files)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_count_total_elements(self):
-        self.assertTrue(self.directory.count_total_elements)
+        self.assertTrue(self.directory_root_demo_01.count_total_elements)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_size(self):
-        self.assertTrue(self.directory.size)
+        self.assertTrue(self.directory_root_demo_01.size)
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_name_get(self):
-        directory = self.subdirectory.with_context(dms_directory_show_path=True)
+        directory = self.directory_sub_demo_01.with_context(
+            dms_directory_show_path=True
+        )
         self.assertTrue(
             "/" in directory.with_context(dms_directory_show_path=True).name_get()[0][1]
         )
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_name_search(self):
-        directories = self.directory_model.name_search("/")
+        directories = self.directory.name_search("/")
         self.assertTrue(len(directories))
 
-    @users("dms-manager", "dms-user")
+    @multi_users(lambda self: self.multi_users(), callback="_setup_test_data")
     def test_search_panel(self):
-        self.assertTrue(
-            self.directory_model.search_panel_select_multi_range("parent_id")
+        self.assertTrue(self.directory.search_panel_select_multi_range("parent_id"))
+        self.assertTrue(self.directory.search_panel_select_multi_range("category_id"))
+        self.assertTrue(self.directory.search_panel_select_multi_range("tag_ids"))
+
+    def test_allow_create_directory_custom_user(self):
+        user = self.env["res.users"].create(
+            {
+                "name": "test",
+                "login": "test",
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        [
+                            self.env.ref("base.group_user").id,
+                            self.env.ref("dms.group_dms_user").id,
+                        ],
+                    )
+                ],
+            }
         )
-        self.assertTrue(
-            self.directory_model.search_panel_select_multi_range("category_id")
+        test_group = self.env["dms.access.group"].create(
+            {
+                "name": "test",
+                "perm_write": True,
+                "explicit_user_ids": [(6, 0, [user.id])],
+            }
         )
-        self.assertTrue(self.directory_model.search_panel_select_multi_range("tag_ids"))
-
-
-class DirectoryMailTestCase(DirectoryTestCase):
-    def setUp(self):
-        super().setUp()
-        self.params = self.env["ir.config_parameter"].sudo()
-        self.params.set_param("mail.catchall.domain", "mydomain.com")
-
-    @mute_logger("odoo.addons.mail.mail_thread")
-    def test_mail_alias_files(self):
-        self.directory.write({"alias_process": "files", "alias_name": "directory+test"})
-        with open(os.path.join(_path, "tests", "data", "mail01.eml"), "r") as file:
-            self.env["mail.thread"].message_process(None, file.read())
-        with open(os.path.join(_path, "tests", "data", "mail02.eml"), "r") as file:
-            self.env["mail.thread"].message_process(None, file.read())
-
-    @mute_logger("odoo.addons.mail.mail_thread")
-    def test_mail_alias_directory(self):
-        self.directory.write(
-            {"alias_process": "directory", "alias_name": "directory+test"}
-        )
-        with open(os.path.join(_path, "tests", "data", "mail01.eml"), "r") as file:
-            self.env["mail.thread"].message_process(None, file.read())
-        with open(os.path.join(_path, "tests", "data", "mail02.eml"), "r") as file:
-            self.env["mail.thread"].message_process(None, file.read())
+        document_directory = self.env.ref("dms.directory_01_demo")
+        # Add test_group to document directory
+        document_directory.write({"complete_group_ids": [(6, 0, [test_group.id])]})
+        record = Form(self.env["dms.directory"].sudo(user))
+        record.name = uuid.uuid4().hex
+        record.parent_id = document_directory
+        with self.assertRaises(AccessError):
+            record.save()
+        # allow perm_create
+        test_group.perm_create = True
+        record = Form(self.directory.sudo(user))
+        record.name = uuid.uuid4().hex
+        record.parent_id = document_directory
+        directory = record.save()
+        self.assertTrue(directory.permission_create)

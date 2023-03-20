@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2020 Creu Blanca
-     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
     <record model="ir.ui.view" id="dms_storage_dms_tree_view">
         <field name="name">dms.storage.dms_tree (in dms_field)</field>
@@ -31,12 +31,6 @@
         <field name="arch" type="xml">
             <field name="model_ids" position="attributes">
                 <attribute name="attrs">{'invisible': 0}</attribute>
-            </field>
-            <field name="model_ids" position="after">
-                <field
-                    name="field_default_group_id"
-                    attrs="{'invisible': ['|', ('model_ids', '=', False),('save_type', '=', 'attachment')]}"
-                />
             </field>
         </field>
     </record>

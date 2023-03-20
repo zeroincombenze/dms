@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2020 Creu Blanca
-     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). -->
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
     <record model="ir.ui.view" id="dms_add_directory_record_form_view">
         <field name="name">dms.add.directory.record.form (in dms_field)</field>
@@ -11,7 +11,7 @@
                     <field name="res_id" invisible="1" />
                     <field
                         name="storage_id"
-                        domain="[('id', 'in', storage_ids), ('field_default_group_id.users', '=', uid)]"
+                        domain="[('id', 'in', storage_ids)]"
                         widget="selection"
                     />
                     <field name="storage_ids" invisible="1" />

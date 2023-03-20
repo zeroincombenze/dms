@@ -5,7 +5,7 @@
 
 from logging import getLogger
 
-from odoo import api, fields, models
+from odoo import SUPERUSER_ID, api, fields, models
 from odoo.osv.expression import FALSE_DOMAIN, NEGATIVE_TERM_OPERATORS, OR, TRUE_DOMAIN
 
 _logger = getLogger(__name__)
@@ -18,14 +18,10 @@ class DmsSecurityMixin(models.AbstractModel):
     # Submodels must define this field that points to the owner dms.directory
     _directory_field = "directory_id"
 
-    res_model = fields.Char(string="Linked attachments model", index=True, store=True)
-    res_id = fields.Integer(
-        string="Linked attachments record ID", index=True, store=True
-    )
+    res_model = fields.Char(string="Linked attachments model", index=True)
+    res_id = fields.Integer(string="Linked attachments record ID", index=True)
     record_ref = fields.Reference(
-        string="Record Referenced",
-        compute="_compute_record_ref",
-        selection=lambda self: self._get_ref_selection(),
+        string="Record Referenced", compute="_compute_record_ref", selection=[]
     )
     permission_read = fields.Boolean(
         compute="_compute_permissions",
@@ -48,15 +44,9 @@ class DmsSecurityMixin(models.AbstractModel):
         string="Delete Access",
     )
 
-    @api.model
-    def _get_ref_selection(self):
-        models = self.env["ir.model"].search([])
-        return [(model.model, model.name) for model in models]
-
     @api.depends("res_model", "res_id")
     def _compute_record_ref(self):
         for record in self:
-            record.record_ref = False
             if record.res_model and record.res_id:
                 record.record_ref = "{},{}".format(record.res_model, record.res_id)
 
@@ -66,7 +56,7 @@ class DmsSecurityMixin(models.AbstractModel):
         ⚠ Not very performant; only display field on form views.
         """
         # Superuser unrestricted 🦸
-        if self.env.su:
+        if self.env.uid == SUPERUSER_ID:
             self.update(
                 {
                     "permission_create": True,
@@ -94,24 +84,20 @@ class DmsSecurityMixin(models.AbstractModel):
     @api.model
     def _get_domain_by_inheritance(self, operation):
         """Get domain for inherited accessible records."""
-        if self.env.su:
+        if self.env.uid == SUPERUSER_ID:
             return []
         inherited_access_field = "storage_id_inherit_access_from_parent_record"
         if self._name != "dms.directory":
             inherited_access_field = "{}.{}".format(
-                self._directory_field,
-                inherited_access_field,
+                self._directory_field, inherited_access_field,
             )
-        inherited_access_domain = [
-            ("storage_id_save_type", "=", "attachment"),
-            (inherited_access_field, "=", True),
-        ]
+        inherited_access_domain = [(inherited_access_field, "=", True)]
         domains = []
         # Get all used related records
         related_groups = self.sudo().read_group(
-            domain=inherited_access_domain + [("res_model", "!=", False)],
-            fields=["res_id:array_agg"],
-            groupby=["res_model"],
+            inherited_access_domain + [("res_model", "!=", False)],
+            ["res_id:array_agg"],
+            ["res_model"],
         )
         for group in related_groups:
             try:
@@ -132,8 +118,7 @@ class DmsSecurityMixin(models.AbstractModel):
                 continue
             domains.append([("res_model", "=", model._name), ("res_id", "=", False)])
             # Check record access in batch too
-            group_ids = [i for i in group["res_id"] if i]  # Hack to remove None res_id
-            related_ok = model.browse(group_ids)._filter_access_rules_python(operation)
+            related_ok = model.browse(group["res_id"])._filter_access_rules(operation)
             if not related_ok:
                 continue
             domains.append(
@@ -189,16 +174,18 @@ class DmsSecurityMixin(models.AbstractModel):
     def _get_permission_domain(self, operator, value, operation):
         """Abstract logic for searching computed permission fields."""
         _self = self
-        # HACK ir.rule domain is always computed with sudo, so if this check is
-        # true, we can assume safely that you're checking permissions
-        if self.env.su and value == self.env.uid:
-            _self = self.sudo(False)
+        # HACK While computing ir.rule domain, you're always superuser, so if
+        # you're superuser but `value` is an `int`, we can assume safely that
+        # you're checking permissions for another user (see the corresponding
+        # rules in `security.xml`)
+        # TODO Remove hack in v13, where sudo() and with_user() differ?
+        if self.env.uid == SUPERUSER_ID and isinstance(value, int):
+            _self = self.sudo(value)
             value = bool(value)
         # Tricky one, to know if you want to search
         # positive or negative access
         positive = (operator not in NEGATIVE_TERM_OPERATORS) == bool(value)
-        if _self.env.su:
-            # You're SUPERUSER_ID
+        if _self.env.uid == SUPERUSER_ID:
             return TRUE_DOMAIN if positive else FALSE_DOMAIN
         # Obtain and combine domains
         result = OR(
@@ -226,29 +213,3 @@ class DmsSecurityMixin(models.AbstractModel):
     @api.model
     def _search_permission_write(self, operator, value):
         return self._get_permission_domain(operator, value, "write")
-
-    def _filter_access_rules_python(self, operation):
-        # Only kept to not break inheritance; see next comment
-        result = super()._filter_access_rules_python(operation)
-        # HACK Always fall back to applying rules by SQL.
-        # Upstream `_filter_acccess_rules_python()` doesn't use computed fields
-        # search methods. Thus, it will take the `[('permission_{operation}',
-        # '=', user.id)]` rule literally. Obviously that will always fail
-        # because `self[f"permission_{operation}"]` will always be a `bool`,
-        # while `user.id` will always be an `int`.
-        result |= self._filter_access_rules(operation)
-        return result
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        # Create as sudo to avoid testing creation permissions before DMS security
-        # groups are attached (otherwise nobody would be able to create)
-        res = super(DmsSecurityMixin, self.sudo()).create(vals_list)
-        # Need to flush now, so all groups are stored in DB and the SELECT used
-        # to check access works
-        res.flush()
-        # Go back to original sudo state and check we really had creation permission
-        res = res.sudo(self.env.su)
-        res.check_access_rights("create")
-        res.check_access_rule("create")
-        return res

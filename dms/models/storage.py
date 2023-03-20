@@ -1,6 +1,5 @@
 # Copyright 2017-2019 MuK IT GmbH.
 # Copyright 2020 Creu Blanca
-# Copyright 2021 Tecnativa - Víctor Martínez
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 import logging
@@ -39,7 +38,7 @@ class Storage(models.Model):
     company_id = fields.Many2one(
         comodel_name="res.company",
         string="Company",
-        default=lambda self: self.env.company,
+        default=lambda self: self.env.user.company_id,
         help="If set, directories and files will only be available for "
         "the selected company.",
     )
@@ -52,7 +51,7 @@ class Storage(models.Model):
 
     root_directory_ids = fields.One2many(
         comodel_name="dms.directory",
-        inverse_name="storage_id",
+        inverse_name="root_storage_id",
         string="Root Directories",
         auto_join=False,
         readonly=False,
@@ -100,28 +99,18 @@ class Storage(models.Model):
         "composition process too",
     )
 
-    @api.onchange("save_type")
-    def _onchange_save_type(self):
-        for record in self:
-            if record.save_type == "attachment":
-                record.inherit_access_from_parent_record = True
-
     # ----------------------------------------------------------
     # Actions
     # ----------------------------------------------------------
 
     def action_storage_migrate(self):
-        if self.save_type != "attachment":
-            if not self.env.user.has_group("dms.group_dms_manager"):
-                raise AccessError(_("Only managers can execute this action."))
-            files = self.env["dms.file"].with_context(active_test=False).sudo()
+        if not self.env.user.has_group("dms.group_dms_manager"):
+            raise AccessError(_("Only managers can execute this action."))
+        files = self.env["dms.file"].with_context(active_test=False).sudo()
 
-            for record in self:
-                domain = [
-                    ("require_migration", "=", True),
-                    ("storage_id", "=", record.id),
-                ]
-                files.search(domain).action_migrate()
+        for record in self:
+            domain = [("require_migration", "=", True), ("storage_id", "=", record.id)]
+            files.search(domain).action_migrate()
 
     def action_save_onboarding_storage_step(self):
         self.env.user.company_id.set_onboarding_step_done(

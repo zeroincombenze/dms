@@ -21,11 +21,10 @@ class CustomerPortal(CustomerPortal):
                 return False
         return item
 
-    def _prepare_home_portal_values(self, counters):
-        values = super()._prepare_home_portal_values(counters)
-        if "dms_directory_count" in counters:
-            ids = request.env["dms.directory"]._get_own_root_directories()
-            values["dms_directory_count"] = len(ids)
+    def _prepare_portal_layout_values(self):
+        values = super()._prepare_portal_layout_values()
+        ids = request.env["dms.directory"]._get_own_root_directories()
+        values.update({"dms_directory_count": len(ids)})
         return values
 
     @http.route(["/my/dms"], type="http", auth="user", website=True)
@@ -46,11 +45,7 @@ class CustomerPortal(CustomerPortal):
             filterby = "name"
         # domain
         domain = [
-            (
-                "id",
-                "in",
-                request.env["dms.directory"]._get_own_root_directories(),
-            )
+            ("id", "in", request.env["dms.directory"]._get_own_root_directories(),)
         ]
         # search
         if search and search_in:
@@ -157,7 +152,7 @@ class CustomerPortal(CustomerPortal):
         values = {
             "dms_directories": dms_directory_items,
             "page_name": "dms_directory",
-            "default_url": "/my/dms",
+            "default_url": "/my/dms/directories",
             "searchbar_sortings": searchbar_sortings,
             "searchbar_inputs": searchbar_inputs,
             "search_in": search_in,
@@ -188,11 +183,6 @@ class CustomerPortal(CustomerPortal):
                 return request.redirect("/my")
 
         dms_file_sudo = res
-        # It's necessary to prevent AccessError in ir_attachment .check() function
-        if dms_file_sudo.attachment_id and request.env.user.has_group(
-            "base.group_portal"
-        ):
-            dms_file_sudo = dms_file_sudo.sudo()
         filecontent = base64.b64decode(dms_file_sudo.content)
         content_type = ["Content-Type", "application/octet-stream"]
         disposition_content = [

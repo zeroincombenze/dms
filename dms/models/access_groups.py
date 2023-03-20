@@ -131,10 +131,11 @@ class DmsAccessGroups(models.Model):
     @api.model
     def default_get(self, fields_list):
         res = super(DmsAccessGroups, self).default_get(fields_list)
-        if "explicit_user_ids" in res and res["explicit_user_ids"]:
-            res["explicit_user_ids"] = res["explicit_user_ids"] + [self.env.uid]
-        else:
-            res["explicit_user_ids"] = [(6, 0, [self.env.uid])]
+        if not self.env.context.get("groups_no_autojoin"):
+            if "explicit_user_ids" in res and res["explicit_user_ids"]:
+                res["explicit_user_ids"] = res["explicit_user_ids"] + [self.env.uid]
+            else:
+                res["explicit_user_ids"] = [self.env.uid]
         return res
 
     @api.depends(

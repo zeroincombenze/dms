@@ -1,5 +1,5 @@
 # Copyright 2020 Creu Blanca
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -15,14 +15,14 @@ class DmsDirectory(models.Model):
     def _default_parent(self):
         return self.env.context.get("default_parent_directory_id", False)
 
-    @api.constrains("res_id", "is_root_directory", "storage_id", "res_model")
+    @api.constrains("res_id", "is_root_directory", "root_storage_id", "res_model")
     def _check_resource(self):
         for directory in self:
             if directory.storage_id.save_type == "attachment":
                 continue
             if (
                 directory.is_root_directory
-                and directory.storage_id.model_ids
+                and directory.root_storage_id.model_ids
                 and not directory.res_id
             ):
                 raise ValidationError(
@@ -35,15 +35,15 @@ class DmsDirectory(models.Model):
                     _("Directory %s must be root in order to be related to a " "record")
                     % directory.display_name
                 )
-            if not directory.storage_id.model_ids:
+            if not directory.root_storage_id.model_ids:
                 raise ValidationError(
                     _(
                         "Storage %s should need to be assigned to a model in "
                         "order to relate the directory to a record"
                     )
-                    % directory.storage_id.display_name
+                    % directory.root_storage_id.display_name
                 )
-            if directory.res_model not in directory.storage_id.model_ids.mapped(
+            if directory.res_model not in directory.root_storage_id.model_ids.mapped(
                 "model"
             ):
                 raise ValidationError(
@@ -51,11 +51,11 @@ class DmsDirectory(models.Model):
                         "Storage %s should need to be assigned to "
                         "a model related to the storage"
                     )
-                    % directory.storage_id.display_name
+                    % directory.root_storage_id.display_name
                 )
             if self.search(
                 [
-                    ("storage_id", "=", directory.storage_id.id),
+                    ("root_storage_id", "=", directory.root_storage_id.id),
                     ("id", "!=", directory.id),
                     ("res_id", "=", directory.res_id),
                     ("res_model", "=", directory.res_model),
@@ -101,16 +101,16 @@ class DmsDirectory(models.Model):
     def search_read_parents(
         self, domain=False, fields=None, offset=0, limit=None, order=None
     ):
-        """This method finds the top level elements of the hierarchy
-        for a given search query.
+        """ This method finds the top level elements of the hierarchy
+            for a given search query.
 
-        :param domain: a search domain <reference/orm/domains> (default: empty list)
-        :param fields: a list of fields to read (default: all fields of the model)
-        :param offset: the number of results to ignore (default: none)
-        :param limit: maximum number of records to return (default: all)
-        :param order: a string to define the sort order of the query
-             (default: none)
-        :returns: the top level elements for the given search query
+            :param domain: a search domain <reference/orm/domains> (default: empty list)
+            :param fields: a list of fields to read (default: all fields of the model)
+            :param offset: the number of results to ignore (default: none)
+            :param limit: maximum number of records to return (default: all)
+            :param order: a string to define the sort order of the query
+                 (default: none)
+            :returns: the top level elements for the given search query
         """
         if not domain:
             domain = []
@@ -131,17 +131,17 @@ class DmsDirectory(models.Model):
     def search_parents(
         self, domain=False, offset=0, limit=None, order=None, count=False
     ):
-        """This method finds the top level elements of the
-        hierarchy for a given search query.
+        """ This method finds the top level elements of the
+            hierarchy for a given search query.
 
-        :param domain: a search domain <reference/orm/domains> (default: empty list)
-        :param offset: the number of results to ignore (default: none)
-        :param limit: maximum number of records to return (default: all)
-        :param order: a string to define the sort order of the query
-             (default: none)
-        :param count: counts and returns the number of matching records
-             (default: False)
-        :returns: the top level elements for the given search query
+            :param domain: a search domain <reference/orm/domains> (default: empty list)
+            :param offset: the number of results to ignore (default: none)
+            :param limit: maximum number of records to return (default: all)
+            :param order: a string to define the sort order of the query
+                 (default: none)
+            :param count: counts and returns the number of matching records
+                 (default: False)
+            :returns: the top level elements for the given search query
         """
         if not domain:
             domain = []
@@ -207,18 +207,18 @@ class DmsDirectory(models.Model):
     def search_childs(
         self, parent_id, domain=False, offset=0, limit=None, order=None, count=False
     ):
-        """This method finds the direct child elements of the parent
-        record for a given search query.
+        """ This method finds the direct child elements of the parent
+            record for a given search query.
 
-        :param parent_id: the integer representing the ID of the parent record
-        :param domain: a search domain <reference/orm/domains> (default: empty list)
-        :param offset: the number of results to ignore (default: none)
-        :param limit: maximum number of records to return (default: all)
-        :param order: a string to define the sort order of the query
-             (default: none)
-        :param count: counts and returns the number of matching records
-             (default: False)
-        :returns: the top level elements for the given search query
+            :param parent_id: the integer representing the ID of the parent record
+            :param domain: a search domain <reference/orm/domains> (default: empty list)
+            :param offset: the number of results to ignore (default: none)
+            :param limit: maximum number of records to return (default: all)
+            :param order: a string to define the sort order of the query
+                 (default: none)
+            :param count: counts and returns the number of matching records
+                 (default: False)
+            :returns: the top level elements for the given search query
         """
         if not domain:
             domain = []
@@ -229,16 +229,16 @@ class DmsDirectory(models.Model):
     def search_read_childs(
         self, parent_id, domain=False, fields=None, offset=0, limit=None, order=None
     ):
-        """This method finds the direct child elements of the parent
-        record for a given search query.
+        """ This method finds the direct child elements of the parent
+            record for a given search query.
 
-        :param parent_id: the integer representing the ID of the parent record
-        :param domain: a search domain <reference/orm/domains> (default: empty list)
-        :param fields: a list of fields to read (default: all fields of the model)
-        :param offset: the number of results to ignore (default: none)
-        :param limit: maximum number of records to return (default: all)
-        :param order: a string to define the sort order of the query (default: none)
-        :returns: the top level elements for the given search query
+            :param parent_id: the integer representing the ID of the parent record
+            :param domain: a search domain <reference/orm/domains> (default: empty list)
+            :param fields: a list of fields to read (default: all fields of the model)
+            :param offset: the number of results to ignore (default: none)
+            :param limit: maximum number of records to return (default: all)
+            :param order: a string to define the sort order of the query (default: none)
+            :returns: the top level elements for the given search query
         """
         if not domain:
             domain = []

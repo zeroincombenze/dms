@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 13.0\n"
+"Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-02-02 12:33+0000\n"
-"Last-Translator: Olga Marco Puértolas <olga.marco@creublanca.es>\n"
+"PO-Revision-Date: 2021-03-26 18:46+0000\n"
+"Last-Translator: Víctor Martínez <victor.martinez@tecnativa.com>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -45,13 +45,13 @@ msgstr ""
 "                "
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:418
 #, python-format
 msgid "%s Files"
 msgstr "%s Archivos"
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:411
 #, python-format
 msgid "%s Subdirectories"
 msgstr "%s Subcarpetas"
@@ -216,7 +216,7 @@ msgstr "<span class=\"o_form_label\">Tamaño de archivo</span>"
 #. module: dms
 #: model_terms:ir.ui.view,arch_db:dms.portal_my_dms_breadcrumbs
 msgid "<span>Documents</span>"
-msgstr "<span>Documentos</span>"
+msgstr ""
 
 #. module: dms
 #: model:ir.model.fields,help:dms.field_dms_directory__alias_defaults
@@ -228,54 +228,46 @@ msgstr ""
 "predeterminados al crear nuevos registros para este alias."
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:542
 #, python-format
 msgid "A directory can't be a root and have a parent directory."
 msgstr "Una carpeta no puede ser raíz y tener una carpeta padre."
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:537
 #, python-format
 msgid "A directory has to have a parent directory."
 msgstr "Una carpeta debe tener una carpeta padre."
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:524
 #, python-format
 msgid "A directory has to have model in attachment storage."
 msgstr ""
-"Un directorio debe tener un modelo en el almacenamiento de archivos adjuntos."
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:561
 #, python-format
 msgid "A directory with the same name already exists."
 msgstr "Una carpeta con el mismo nombre ya existe."
 
 #. module: dms
-#: code:addons/dms/models/dms_file.py:0
+#: code:addons/dms/models/dms_file.py:465
 #, python-format
 msgid "A file must have model and resource ID in attachment storage."
 msgstr ""
-"Un archivo debe tener un ID de modelo y recurso en el almacenamiento de "
-"archivos adjuntos."
 
 #. module: dms
-#: code:addons/dms/models/dms_file.py:0
+#: code:addons/dms/models/dms_file.py:479
 #, python-format
 msgid "A file with the same name already exists."
 msgstr "Un archivo con el mismo nombre ya existe."
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:535
 #, python-format
-msgid "A root directory has to have a storage."
-msgstr "Un directorio root debe tener un almacenamiento."
-
-#. module: dms
-#: model:ir.model,name:dms.model_abstract_dms_mixin
-msgid "Abstract Dms Mixin"
-msgstr ""
+msgid "A root directory has to have a root storage."
+msgstr "Una carpeta principal debe tener un almacenamiento."
 
 #. module: dms
 #: model_terms:ir.ui.view,arch_db:dms.view_dms_directory_form
@@ -330,27 +322,15 @@ msgid "Activities"
 msgstr "Actividades"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__activity_exception_decoration
-#: model:ir.model.fields,field_description:dms.field_dms_file__activity_exception_decoration
-msgid "Activity Exception Decoration"
-msgstr "Decoración de excepción de actividad"
-
-#. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__activity_state
 #: model:ir.model.fields,field_description:dms.field_dms_file__activity_state
 msgid "Activity State"
 msgstr "Estado de actividad"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__activity_type_icon
-#: model:ir.model.fields,field_description:dms.field_dms_file__activity_type_icon
-msgid "Activity Type Icon"
-msgstr ""
-
-#. module: dms
 #: model_terms:ir.actions.act_window,help:dms.action_dms_directory
 msgid "Add a new Directory."
-msgstr "Añadir un nuevo archivo."
+msgstr "Añadir una nueva carpeta."
 
 #. module: dms
 #: model_terms:ir.actions.act_window,help:dms.action_dms_file
@@ -390,7 +370,7 @@ msgid "Alias domain"
 msgstr "Dominio de alias"
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:620
 #, python-format
 msgid "Alias-Mail-Extraction"
 msgstr "Extracción de alias de correo"
@@ -412,15 +392,17 @@ msgid "All Files"
 msgstr "Todos los archivos"
 
 #. module: dms
+#: model:ir.model.fields,field_description:dms.field_dms_directory__allowed_model_ids
+msgid "Allowed Model"
+msgstr "Modelo permitido"
+
+#. module: dms
 #: model:dms.tag,name:dms.tag_06_demo
 msgid "Apps"
 msgstr "Aplicaciones"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_file__active
-#: model_terms:ir.ui.view,arch_db:dms.view_dms_category_form
-#: model_terms:ir.ui.view,arch_db:dms.view_dms_file_form
-#: model_terms:ir.ui.view,arch_db:dms.view_dms_tag_form
 msgid "Archived"
 msgstr "Archivado"
 
@@ -430,9 +412,8 @@ msgid "Archived Files"
 msgstr "Archivos archivados"
 
 #. module: dms
-#: code:addons/dms/models/storage.py:0
+#: code:addons/dms/models/storage.py:28 selection:dms.storage,save_type:0
 #: model:ir.model,name:dms.model_ir_attachment
-#: model:ir.model.fields.selection,name:dms.selection__dms_storage__save_type__attachment
 #, python-format
 msgid "Attachment"
 msgstr "Adjunto"
@@ -475,7 +456,6 @@ msgid "Categories are used to categorize Documents."
 msgstr "Las categorías son usadas para categorizar documentos."
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__category_id
 #: model:ir.model.fields,field_description:dms.field_dms_directory__category_id
 #: model:ir.model.fields,field_description:dms.field_dms_file__category_id
 #: model:ir.model.fields,field_description:dms.field_dms_tag__category_id
@@ -487,7 +467,7 @@ msgid "Category"
 msgstr "Categoría"
 
 #. module: dms
-#: model:ir.model.constraint,message:dms.constraint_dms_category_name_uniq
+#: sql_constraint:dms.category:0
 msgid "Category name already exists!"
 msgstr "¡El nombre de la categoría ya existe!"
 
@@ -527,15 +507,14 @@ msgid "Click to create a new tag."
 msgstr "Click para crear una nueva etiqueta."
 
 #. module: dms
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_directory_state__closed
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_file_state__closed
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_state__closed
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_storage_state__closed
+#: selection:res.company,documents_onboarding_directory_state:0
+#: selection:res.company,documents_onboarding_file_state:0
+#: selection:res.company,documents_onboarding_state:0
+#: selection:res.company,documents_onboarding_storage_state:0
 msgid "Closed"
 msgstr "Cerrado"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__color
 #: model:ir.model.fields,field_description:dms.field_dms_directory__color
 #: model:ir.model.fields,field_description:dms.field_dms_file__color
 #: model_terms:ir.ui.view,arch_db:dms.search_dms_directory
@@ -555,7 +534,6 @@ msgid "Companies"
 msgstr "Compañías"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__company_id
 #: model:ir.model.fields,field_description:dms.field_dms_directory__company_id
 #: model:ir.model.fields,field_description:dms.field_dms_file__company_id
 #: model:ir.model.fields,field_description:dms.field_dms_storage__company_id
@@ -577,7 +555,7 @@ msgstr "Nombre completo"
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__complete_directory_ids
 msgid "Complete directories"
-msgstr "Directorios completos"
+msgstr ""
 
 #. module: dms
 #: model:ir.model,name:dms.model_res_config_settings
@@ -653,7 +631,7 @@ msgstr "Nº de subcarpetas"
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__count_directories
 msgid "Count Subdirectories Title"
-msgstr "Título de las carpetas de recuento"
+msgstr "Nº de título de subcarpetas"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_category__count_tags
@@ -708,7 +686,7 @@ msgstr "Crear un nuevo objeto de almacenamiento."
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_storage__include_message_attachments
 msgid "Create files from message attachments"
-msgstr "Crear archivos a partir de archivos adjuntos de mensajes"
+msgstr ""
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__create_uid
@@ -742,8 +720,16 @@ msgid "Current Save Type"
 msgstr "Tipo de guardado actual"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__alias_bounced_content
-msgid "Custom Bounced Message"
+#: model:ir.model.fields,field_description:dms.field_dms_directory__custom_thumbnail
+#: model:ir.model.fields,field_description:dms.field_dms_file__custom_thumbnail
+#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__custom_thumbnail
+msgid "Custom Thumbnail"
+msgstr "Miniatura personalizada"
+
+#. module: dms
+#: model_terms:ir.ui.view,arch_db:dms.view_dms_directory_kanban
+#: model_terms:ir.ui.view,arch_db:dms.view_dms_file_kanban
+msgid "Custom thumbnail"
 msgstr ""
 
 #. module: dms
@@ -774,13 +760,7 @@ msgid "DMS Security Mixin"
 msgstr "DMS Security Mixin"
 
 #. module: dms
-#: model:ir.model,name:dms.model_dms_mixins_thumbnail
-msgid "DMS thumbnail and icon mixin"
-msgstr "Mezcla de iconos y miniaturas de DMS"
-
-#. module: dms
-#: code:addons/dms/models/storage.py:0
-#: model:ir.model.fields.selection,name:dms.selection__dms_storage__save_type__database
+#: code:addons/dms/models/storage.py:26 selection:dms.storage,save_type:0
 #, python-format
 msgid "Database"
 msgstr "Base de datos"
@@ -861,7 +841,6 @@ msgid "Directory"
 msgstr "Carpeta"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__display_name
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__display_name
 #: model:ir.model.fields,field_description:dms.field_dms_category__display_name
 #: model:ir.model.fields,field_description:dms.field_dms_directory__display_name
@@ -870,10 +849,6 @@ msgstr "Carpeta"
 #: model:ir.model.fields,field_description:dms.field_dms_security_mixin__display_name
 #: model:ir.model.fields,field_description:dms.field_dms_storage__display_name
 #: model:ir.model.fields,field_description:dms.field_dms_tag__display_name
-#: model:ir.model.fields,field_description:dms.field_ir_attachment__display_name
-#: model:ir.model.fields,field_description:dms.field_mail_thread__display_name
-#: model:ir.model.fields,field_description:dms.field_res_company__display_name
-#: model:ir.model.fields,field_description:dms.field_res_config_settings__display_name
 msgid "Display Name"
 msgstr "Nombre a mostrar"
 
@@ -916,12 +891,19 @@ msgid "Documents Onboarding Storage State"
 msgstr "Estado de almacenamiento de incorporación de documentos"
 
 #. module: dms
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_directory_state__done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_file_state__done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_state__done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_storage_state__done
+#: selection:res.company,documents_onboarding_directory_state:0
+#: selection:res.company,documents_onboarding_file_state:0
+#: selection:res.company,documents_onboarding_state:0
+#: selection:res.company,documents_onboarding_storage_state:0
 msgid "Done"
 msgstr "Hecho"
+
+#. module: dms
+#. openerp-web
+#: code:addons/dms/static/src/xml/views.xml:16
+#, python-format
+msgid "Drop your files here"
+msgstr "Arrastra tus archivos aquí"
 
 #. module: dms
 #: model_terms:ir.ui.view,arch_db:dms.view_dms_directory_kanban
@@ -951,19 +933,19 @@ msgid "Email Thread"
 msgstr ""
 
 #. module: dms
-#: code:addons/dms/tests/common.py:0
+#: code:addons/dms/tests/common.py:84
 #, python-format
 msgid "Error has not been raised"
 msgstr "El error no está trazado"
 
 #. module: dms
-#: code:addons/dms/models/category.py:0
+#: code:addons/dms/models/category.py:126
 #, python-format
 msgid "Error! You cannot create recursive categories."
 msgstr "¡Error! No puedes crear categorías recursivas."
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:514
 #, python-format
 msgid "Error! You cannot create recursive directories."
 msgstr "¡Error! No puedes crear carpetas recursivas."
@@ -1001,10 +983,14 @@ msgid "File Upload"
 msgstr "Archivo subido"
 
 #. module: dms
+#: model:ir.model.fields,field_description:dms.field_dms_file__name
+msgid "Filename"
+msgstr "Nombre de archivo"
+
+#. module: dms
 #: model:ir.actions.act_window,name:dms.action_dms_file
 #: model:ir.actions.act_window,name:dms.action_dms_file_migration
 #: model:ir.actions.act_window,name:dms.action_dms_file_storage_migration
-#: model:ir.actions.act_window,name:dms.action_dms_file_wizard_selector
 #: model:ir.actions.act_window,name:dms.action_dms_files_all_directory
 #: model:ir.actions.act_window,name:dms.action_dms_files_directory
 #: model:ir.actions.act_window,name:dms.action_dms_files_storage
@@ -1036,8 +1022,7 @@ msgid "Files are used to save content directly in Odoo."
 msgstr "Los archivos se usan para guardar el contenido directamente en Odoo."
 
 #. module: dms
-#: code:addons/dms/models/storage.py:0
-#: model:ir.model.fields.selection,name:dms.selection__dms_storage__save_type__file
+#: code:addons/dms/models/storage.py:27 selection:dms.storage,save_type:0
 #, python-format
 msgid "Filestore"
 msgstr "Almacenamiento"
@@ -1059,12 +1044,6 @@ msgstr "Seguidores (canales)"
 #: model:ir.model.fields,field_description:dms.field_dms_file__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Seguidores (Contactos)"
-
-#. module: dms
-#: model:ir.model.fields,help:dms.field_dms_directory__activity_type_icon
-#: model:ir.model.fields,help:dms.field_dms_file__activity_type_icon
-msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
 
 #. module: dms
 #: model:ir.actions.act_window,name:dms.action_dms_settings_general
@@ -1111,7 +1090,6 @@ msgid "Human Resource"
 msgstr "Recursos humanos"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__id
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__id
 #: model:ir.model.fields,field_description:dms.field_dms_category__id
 #: model:ir.model.fields,field_description:dms.field_dms_directory__id
@@ -1120,10 +1098,6 @@ msgstr "Recursos humanos"
 #: model:ir.model.fields,field_description:dms.field_dms_security_mixin__id
 #: model:ir.model.fields,field_description:dms.field_dms_storage__id
 #: model:ir.model.fields,field_description:dms.field_dms_tag__id
-#: model:ir.model.fields,field_description:dms.field_ir_attachment__id
-#: model:ir.model.fields,field_description:dms.field_mail_thread__id
-#: model:ir.model.fields,field_description:dms.field_res_company__id
-#: model:ir.model.fields,field_description:dms.field_res_config_settings__id
 msgid "ID"
 msgstr "ID"
 
@@ -1137,12 +1111,10 @@ msgstr ""
 "contiene el alias de creación de la tarea)"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__activity_exception_icon
-#: model:ir.model.fields,field_description:dms.field_dms_file__activity_exception_icon
 #: model_terms:ir.ui.view,arch_db:dms.view_dms_directory_kanban
 #: model_terms:ir.ui.view,arch_db:dms.view_dms_file_kanban
 msgid "Icon"
-msgstr "Icono"
+msgstr ""
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__icon_url
@@ -1152,12 +1124,6 @@ msgid "Icon URL"
 msgstr ""
 
 #. module: dms
-#: model:ir.model.fields,help:dms.field_dms_directory__activity_exception_icon
-#: model:ir.model.fields,help:dms.field_dms_file__activity_exception_icon
-msgid "Icon to indicate an exception activity."
-msgstr "Icono para indicar una actividad de excepción."
-
-#. module: dms
 #: model:ir.model.fields,help:dms.field_dms_file__active
 msgid "If a file is set to archived, it is not displayed, but still exists."
 msgstr ""
@@ -1165,23 +1131,24 @@ msgstr ""
 "existe."
 
 #. module: dms
-#: model:ir.model.fields,help:dms.field_dms_directory__message_needaction
 #: model:ir.model.fields,help:dms.field_dms_directory__message_unread
-#: model:ir.model.fields,help:dms.field_dms_file__message_needaction
 #: model:ir.model.fields,help:dms.field_dms_file__message_unread
+msgid "If checked new messages require your attention."
+msgstr "Si está marcado los nuevos mensajes requieren su atención."
+
+#. module: dms
+#: model:ir.model.fields,help:dms.field_dms_directory__message_needaction
+#: model:ir.model.fields,help:dms.field_dms_file__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr "Si está marcado los nuevos mensajes requieren su atención."
 
 #. module: dms
 #: model:ir.model.fields,help:dms.field_dms_directory__message_has_error
-#: model:ir.model.fields,help:dms.field_dms_directory__message_has_sms_error
 #: model:ir.model.fields,help:dms.field_dms_file__message_has_error
-#: model:ir.model.fields,help:dms.field_dms_file__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si está marcado algunos mensajes tienen error de entrega."
 
 #. module: dms
-#: model:ir.model.fields,help:dms.field_abstract_dms_mixin__company_id
 #: model:ir.model.fields,help:dms.field_dms_directory__company_id
 #: model:ir.model.fields,help:dms.field_dms_file__company_id
 #: model:ir.model.fields,help:dms.field_dms_storage__company_id
@@ -1193,50 +1160,6 @@ msgstr ""
 "empresa seleccionada."
 
 #. module: dms
-#: model:ir.model.fields,help:dms.field_dms_directory__alias_bounced_content
-msgid ""
-"If set, this content will automatically be sent out to unauthorized users "
-"instead of the default message."
-msgstr ""
-"Si se establece, este contenido se enviará automáticamente a usuarios no "
-"autorizados en lugar del mensaje predeterminado."
-
-#. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__image_1920
-#: model:ir.model.fields,field_description:dms.field_dms_file__image_1920
-#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__image_1920
-msgid "Image"
-msgstr "Imagen"
-
-#. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__image_1024
-#: model:ir.model.fields,field_description:dms.field_dms_file__image_1024
-#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__image_1024
-msgid "Image 1024"
-msgstr "Imagen 1024"
-
-#. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__image_128
-#: model:ir.model.fields,field_description:dms.field_dms_file__image_128
-#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__image_128
-msgid "Image 128"
-msgstr "Imagen 128"
-
-#. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__image_256
-#: model:ir.model.fields,field_description:dms.field_dms_file__image_256
-#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__image_256
-msgid "Image 256"
-msgstr "Imagen 256"
-
-#. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__image_512
-#: model:ir.model.fields,field_description:dms.field_dms_file__image_512
-#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__image_512
-msgid "Image 512"
-msgstr "Imagen 512"
-
-#. module: dms
 #: model:ir.model.fields,help:dms.field_dms_directory__storage_id_inherit_access_from_parent_record
 #: model:ir.model.fields,help:dms.field_dms_storage__inherit_access_from_parent_record
 msgid ""
@@ -1244,21 +1167,14 @@ msgid ""
 "(for example, if some directories are related with any sale, only users with "
 "read access to these sale can acess)"
 msgstr ""
-"Indique si el acceso a directorios y archivos funciona solo con el modelo de "
-"acceso relacionado (por ejemplo, si algunos directorios están relacionados "
-"con alguna venta, solo los usuarios con acceso de lectura a estas ventas "
-"pueden acceder)"
 
 #. module: dms
 #: model:ir.model.fields,help:dms.field_dms_storage__include_message_attachments
 msgid ""
 "Indicate if directories and files auto-create in mail composition process too"
 msgstr ""
-"Indique si los directorios y los archivos también se crean automáticamente "
-"en el proceso de composición del correo"
 
 #. module: dms
-#: model:ir.model.fields,help:dms.field_abstract_dms_mixin__is_hidden
 #: model:ir.model.fields,help:dms.field_dms_directory__is_hidden
 #: model:ir.model.fields,help:dms.field_dms_file__is_hidden
 #: model:ir.model.fields,help:dms.field_dms_storage__is_hidden
@@ -1288,7 +1204,7 @@ msgstr "Grupos heredados"
 #: model:ir.model.fields,field_description:dms.field_dms_directory__storage_id_inherit_access_from_parent_record
 #: model:ir.model.fields,field_description:dms.field_dms_storage__inherit_access_from_parent_record
 msgid "Inherit permissions from related record"
-msgstr "Heredar permisos del registro relacionado"
+msgstr ""
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__perm_inclusive_create
@@ -1334,27 +1250,14 @@ msgid "Is Root Directory"
 msgstr "Es carpeta raíz"
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
-#, python-format
-msgid "It is not possible to change parent to other storage."
-msgstr "No es posible cambiar el parent a otro almacenamiento."
-
-#. module: dms
-#: code:addons/dms/models/directory.py:0
-#, python-format
-msgid "It is not possible to change the storage."
-msgstr "No es posible cambiar el almacenamiento."
-
-#. module: dms
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_directory_state__just_done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_file_state__just_done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_state__just_done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_storage_state__just_done
+#: selection:res.company,documents_onboarding_directory_state:0
+#: selection:res.company,documents_onboarding_file_state:0
+#: selection:res.company,documents_onboarding_state:0
+#: selection:res.company,documents_onboarding_storage_state:0
 msgid "Just done"
 msgstr "Justo ahora"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin____last_update
 #: model:ir.model.fields,field_description:dms.field_dms_access_group____last_update
 #: model:ir.model.fields,field_description:dms.field_dms_category____last_update
 #: model:ir.model.fields,field_description:dms.field_dms_directory____last_update
@@ -1363,10 +1266,6 @@ msgstr "Justo ahora"
 #: model:ir.model.fields,field_description:dms.field_dms_security_mixin____last_update
 #: model:ir.model.fields,field_description:dms.field_dms_storage____last_update
 #: model:ir.model.fields,field_description:dms.field_dms_tag____last_update
-#: model:ir.model.fields,field_description:dms.field_ir_attachment____last_update
-#: model:ir.model.fields,field_description:dms.field_mail_thread____last_update
-#: model:ir.model.fields,field_description:dms.field_res_company____last_update
-#: model:ir.model.fields,field_description:dms.field_res_config_settings____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
 
@@ -1396,7 +1295,6 @@ msgid "Last update"
 msgstr "Última actualización"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__allowed_model_ids
 #: model:ir.model.fields,field_description:dms.field_dms_storage__model_ids
 msgid "Linked Models"
 msgstr "Modelos vinculados"
@@ -1417,7 +1315,7 @@ msgstr "ID de registro de archivos adjuntos vinculados"
 
 #. module: dms
 #. openerp-web
-#: code:addons/dms/static/src/xml/views.xml:0
+#: code:addons/dms/static/src/xml/views.xml:36
 #, python-format
 msgid "Loading"
 msgstr "Cargando"
@@ -1454,6 +1352,20 @@ msgid "Manual File Migration"
 msgstr "Migración de archivo manual"
 
 #. module: dms
+#: model:ir.model.fields,field_description:dms.field_dms_directory__custom_thumbnail_medium
+#: model:ir.model.fields,field_description:dms.field_dms_file__custom_thumbnail_medium
+#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__custom_thumbnail_medium
+msgid "Medium Custom Thumbnail"
+msgstr "Miniatura personalizada mediana"
+
+#. module: dms
+#: model:ir.model.fields,field_description:dms.field_dms_directory__thumbnail_medium
+#: model:ir.model.fields,field_description:dms.field_dms_file__thumbnail_medium
+#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__thumbnail_medium
+msgid "Medium Thumbnail"
+msgstr "Miniatura mediana"
+
+#. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__message_has_error
 #: model:ir.model.fields,field_description:dms.field_dms_file__message_has_error
 msgid "Message Delivery error"
@@ -1477,7 +1389,7 @@ msgid "Migrate"
 msgstr "Migrar"
 
 #. module: dms
-#: code:addons/dms/models/dms_file.py:0
+#: code:addons/dms/models/dms_file.py:250
 #, python-format
 msgid "Migrate File %s of %s [ %s ]"
 msgstr "Migrar archivo %s de %s [ %s ]"
@@ -1509,12 +1421,6 @@ msgid "Modification Date"
 msgstr "Fecha de modificación"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__my_activity_date_deadline
-#: model:ir.model.fields,field_description:dms.field_dms_file__my_activity_date_deadline
-msgid "My Activity Deadline"
-msgstr ""
-
-#. module: dms
 #: model_terms:ir.ui.view,arch_db:dms.search_dms_directory
 msgid "My Directories"
 msgstr "Mis directorios"
@@ -1530,11 +1436,12 @@ msgid "My Files"
 msgstr "Mis archivos"
 
 #. module: dms
-#: code:addons/dms/controllers/portal.py:0
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__name
+#: code:addons/dms/controllers/portal.py:35
+#: code:addons/dms/controllers/portal.py:42
+#: code:addons/dms/controllers/portal.py:93
+#: code:addons/dms/controllers/portal.py:100
 #: model:ir.model.fields,field_description:dms.field_dms_category__name
 #: model:ir.model.fields,field_description:dms.field_dms_directory__name
-#: model:ir.model.fields,field_description:dms.field_dms_file__name
 #: model:ir.model.fields,field_description:dms.field_dms_storage__name
 #: model:ir.model.fields,field_description:dms.field_dms_tag__name
 #: model_terms:ir.ui.view,arch_db:dms.portal_my_dms
@@ -1577,10 +1484,10 @@ msgid "Next Activity Type"
 msgstr "Tipo de siguiente actividad"
 
 #. module: dms
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_directory_state__not_done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_file_state__not_done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_state__not_done
-#: model:ir.model.fields.selection,name:dms.selection__res_company__documents_onboarding_storage_state__not_done
+#: selection:res.company,documents_onboarding_directory_state:0
+#: selection:res.company,documents_onboarding_file_state:0
+#: selection:res.company,documents_onboarding_state:0
+#: selection:res.company,documents_onboarding_storage_state:0
 msgid "Not done"
 msgstr "No hecho"
 
@@ -1598,7 +1505,7 @@ msgstr "Número de acciones"
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__message_has_error_counter
 #: model:ir.model.fields,field_description:dms.field_dms_file__message_has_error_counter
-msgid "Number of errors"
+msgid "Number of error"
 msgstr "Número de error"
 
 #. module: dms
@@ -1625,7 +1532,7 @@ msgid "Only admin user"
 msgstr ""
 
 #. module: dms
-#: code:addons/dms/models/storage.py:0
+#: code:addons/dms/models/storage.py:108
 #, python-format
 msgid "Only managers can execute this action."
 msgstr "Solo los responsables pueden ejecutar esta acción."
@@ -1652,44 +1559,49 @@ msgid "Organizing"
 msgstr "Organizar"
 
 #. module: dms
+#: selection:dms.directory,activity_state:0 selection:dms.file,activity_state:0
+msgid "Overdue"
+msgstr "Sobrescribir"
+
+#. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__alias_user_id
 msgid "Owner"
-msgstr "Sobrescribir"
+msgstr "Propietario"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_category__parent_id
 msgid "Parent Category"
-msgstr "Propietario"
+msgstr "Categoría padre"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__parent_id
 msgid "Parent Directory"
-msgstr "Categoría padre"
+msgstr "Carpeta padre"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__parent_group_id
 msgid "Parent Group"
-msgstr "Carpeta padre"
+msgstr "Grupo padre"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__alias_parent_model_id
 msgid "Parent Model"
-msgstr "Grupo padre"
+msgstr "Modelo padre"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__parent_path
 #: model:ir.model.fields,field_description:dms.field_dms_category__parent_path
 #: model:ir.model.fields,field_description:dms.field_dms_directory__parent_path
 msgid "Parent Path"
-msgstr "Modelo padre"
+msgstr "Ruta padre"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__alias_parent_thread_id
 msgid "Parent Record Thread ID"
-msgstr "Ruta padre"
+msgstr "ID del hilo del registro principal"
 
 #. module: dms
-#: code:addons/dms/models/access_groups.py:0
+#: code:addons/dms/models/access_groups.py:163
 #, python-format
 msgid "Parent group '%(parent)s' is child of '%(current)s'."
 msgstr ""
@@ -1711,6 +1623,11 @@ msgid "Partner"
 msgstr "Contacto"
 
 #. module: dms
+#: model_terms:ir.ui.view,arch_db:dms.view_dms_file_tree
+msgid "Path"
+msgstr "Ruta"
+
+#. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_file__path_json
 msgid "Path Json"
 msgstr "Path Json"
@@ -1719,6 +1636,11 @@ msgstr "Path Json"
 #: model:ir.model.fields,field_description:dms.field_dms_file__path_names
 msgid "Path Names"
 msgstr "Nombres de ruta"
+
+#. module: dms
+#: selection:dms.directory,activity_state:0 selection:dms.file,activity_state:0
+msgid "Planned"
+msgstr "Planeado"
 
 #. module: dms
 #: model:ir.model.fields,help:dms.field_dms_directory__alias_contact
@@ -1793,13 +1715,6 @@ msgid "Responsible User"
 msgstr "Usuario responsable"
 
 #. module: dms
-#. openerp-web
-#: code:addons/dms/static/src/js/views/search_panel.js:0
-#, python-format
-msgid "Root"
-msgstr ""
-
-#. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_storage__root_directory_ids
 #: model_terms:ir.ui.view,arch_db:dms.search_dms_directory
 #: model_terms:ir.ui.view,arch_db:dms.view_dms_storage_form
@@ -1807,10 +1722,9 @@ msgid "Root Directories"
 msgstr "Carpetas raíz"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_directory__message_has_sms_error
-#: model:ir.model.fields,field_description:dms.field_dms_file__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "Error de entrega de SMS"
+#: model:ir.model.fields,field_description:dms.field_dms_directory__root_storage_id
+msgid "Root Storage"
+msgstr "Almacenamiento raíz"
 
 #. module: dms
 #: model:dms.tag,name:dms.tag_04_demo
@@ -1818,7 +1732,6 @@ msgid "Sales"
 msgstr "Ventas"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__storage_id_save_type
 #: model:ir.model.fields,field_description:dms.field_dms_directory__storage_id_save_type
 #: model:ir.model.fields,field_description:dms.field_dms_file__storage_id_save_type
 #: model:ir.model.fields,field_description:dms.field_dms_storage__save_type
@@ -1849,7 +1762,7 @@ msgid "Show storages"
 msgstr "Mostrar almacenamientos"
 
 #. module: dms
-#: model:ir.model.fields.selection,name:dms.selection__dms_directory__alias_process__files
+#: selection:dms.directory,alias_process:0
 msgid "Single Files"
 msgstr "Archivos individuales"
 
@@ -1862,8 +1775,21 @@ msgid "Size"
 msgstr "Tamaño"
 
 #. module: dms
+#: model:ir.model.fields,field_description:dms.field_dms_directory__custom_thumbnail_small
+#: model:ir.model.fields,field_description:dms.field_dms_file__custom_thumbnail_small
+#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__custom_thumbnail_small
+msgid "Small Custom Thumbnail"
+msgstr "Miniatura personalizada pequeña"
+
+#. module: dms
+#: model:ir.model.fields,field_description:dms.field_dms_directory__thumbnail_small
+#: model:ir.model.fields,field_description:dms.field_dms_file__thumbnail_small
+#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__thumbnail_small
+msgid "Small Thumbnail"
+msgstr ""
+
+#. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__starred
-#: model_terms:ir.ui.view,arch_db:dms.view_dms_directory_kanban
 msgid "Starred"
 msgstr "Destacado"
 
@@ -1893,7 +1819,6 @@ msgstr ""
 
 #. module: dms
 #: model:ir.model,name:dms.model_dms_storage
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__storage_id
 #: model:ir.model.fields,field_description:dms.field_dms_directory__storage_id
 #: model:ir.model.fields,field_description:dms.field_dms_file__storage_id
 #: model_terms:ir.ui.view,arch_db:dms.onboarding_storage_step
@@ -1905,7 +1830,6 @@ msgid "Storage"
 msgstr "Almacenamiento"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_abstract_dms_mixin__is_hidden
 #: model:ir.model.fields,field_description:dms.field_dms_directory__is_hidden
 #: model:ir.model.fields,field_description:dms.field_dms_file__is_hidden
 #: model:ir.model.fields,field_description:dms.field_dms_storage__is_hidden
@@ -1939,7 +1863,7 @@ msgid "Subdirectories"
 msgstr "Subcarpetas"
 
 #. module: dms
-#: model:ir.model.fields.selection,name:dms.selection__dms_directory__alias_process__directory
+#: selection:dms.directory,alias_process:0
 msgid "Subdirectory"
 msgstr "Subcarpeta"
 
@@ -1954,7 +1878,7 @@ msgid "Tag"
 msgstr "Etiqueta"
 
 #. module: dms
-#: model:ir.model.constraint,message:dms.constraint_dms_tag_name_uniq
+#: sql_constraint:dms.tag:0
 msgid "Tag name already exists!"
 msgstr "¡El nombre de la etiqueta ya existe!"
 
@@ -2003,25 +1927,25 @@ msgid "The configuration is done!"
 msgstr "¡La configuración está terminada!"
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:549
 #, python-format
 msgid "The directory name is invalid."
 msgstr "El nombre de la carpeta es inválido."
 
 #. module: dms
-#: code:addons/dms/models/dms_file.py:0
+#: code:addons/dms/models/dms_file.py:488
 #, python-format
 msgid "The file has a forbidden file extension."
 msgstr "El archivo tiene una extensión prohibida."
 
 #. module: dms
-#: code:addons/dms/models/dms_file.py:0
+#: code:addons/dms/models/dms_file.py:472
 #, python-format
 msgid "The file name is invalid."
 msgstr "El nombre de archivo es inválido."
 
 #. module: dms
-#: code:addons/dms/models/dms_file.py:0
+#: code:addons/dms/models/dms_file.py:495
 #, python-format
 msgid "The maximum upload size is %s MB)."
 msgstr "El tamaño máximo de subida es %s MB)."
@@ -2048,7 +1972,7 @@ msgstr ""
 "recibir correos electrónicos para <jobs@example.odoo.com>"
 
 #. module: dms
-#: model:ir.model.constraint,message:dms.constraint_dms_access_group_name_uniq
+#: sql_constraint:dms.access.group:0
 msgid "The name of the group must be unique!"
 msgstr "¡El nombre del grupo debe ser único!"
 
@@ -2067,7 +1991,6 @@ msgstr ""
 "sistema para esa dirección."
 
 #. module: dms
-#: model:ir.model.fields,help:dms.field_abstract_dms_mixin__storage_id_save_type
 #: model:ir.model.fields,help:dms.field_dms_directory__storage_id_save_type
 #: model:ir.model.fields,help:dms.field_dms_file__storage_id_save_type
 #: model:ir.model.fields,help:dms.field_dms_storage__save_type
@@ -2082,10 +2005,27 @@ msgstr ""
 "         manualmente activando la acción."
 
 #. module: dms
-#: code:addons/dms/models/directory.py:0
+#: code:addons/dms/models/directory.py:528
 #, python-format
 msgid "This directory needs to be associated to a record."
-msgstr "Este directorio necesita estar asociado a un registro."
+msgstr ""
+
+#. module: dms
+#: model:ir.model.fields,field_description:dms.field_dms_directory__thumbnail
+#: model:ir.model.fields,field_description:dms.field_dms_file__thumbnail
+#: model:ir.model.fields,field_description:dms.field_dms_mixins_thumbnail__thumbnail
+msgid "Thumbnail"
+msgstr "Miniatura"
+
+#. module: dms
+#: model:ir.model,name:dms.model_dms_mixins_thumbnail
+msgid "Thumbnail Mixin"
+msgstr "Miniatura Mixin"
+
+#. module: dms
+#: selection:dms.directory,activity_state:0 selection:dms.file,activity_state:0
+msgid "Today"
+msgstr "Hoy"
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_directory__count_total_elements
@@ -2108,15 +2048,9 @@ msgid "Traveling"
 msgstr "Viaje"
 
 #. module: dms
-#: model:ir.model.fields,field_description:dms.field_dms_file__mimetype
+#: model:ir.model.fields,field_description:dms.field_dms_file__res_mimetype
 msgid "Type"
 msgstr "Tipo"
-
-#. module: dms
-#: model:ir.model.fields,help:dms.field_dms_directory__activity_exception_decoration
-#: model:ir.model.fields,help:dms.field_dms_file__activity_exception_decoration
-msgid "Type of the exception activity on record."
-msgstr "Tipo de actividad de excepción registrada."
 
 #. module: dms
 #: model:ir.model.fields,field_description:dms.field_dms_access_group__perm_unlink
@@ -2173,7 +2107,7 @@ msgstr "Factura del proveedor"
 
 #. module: dms
 #. openerp-web
-#: code:addons/dms/static/src/xml/views.xml:0
+#: code:addons/dms/static/src/xml/views.xml:43
 #, python-format
 msgid "Viewer"
 msgstr "Visualizador"
@@ -2205,7 +2139,7 @@ msgstr "Acceso de escritura"
 
 #. module: dms
 #. openerp-web
-#: code:addons/dms/static/src/js/views/many_drop_target.js:0
+#: code:addons/dms/static/src/js/views/many_drop_target.js:89
 #, python-format
 msgid "You must select a directory first"
 msgstr "Debe selecciona una carpeta primero"
@@ -2247,33 +2181,6 @@ msgstr "o_onboarding_orange"
 msgid "res.company"
 msgstr "res.company"
 
-#~ msgid "Path"
-#~ msgstr "Ruta"
-
-#~ msgid "Search"
-#~ msgstr "Búsqueda"
-
-#~ msgid "Drop your files here"
-#~ msgstr "Arrastra tus archivos aquí"
-
-#~ msgid "Custom Thumbnail"
-#~ msgstr "Miniatura personalizada"
-
-#~ msgid "Medium Custom Thumbnail"
-#~ msgstr "Miniatura personalizada mediana"
-
-#~ msgid "Medium Thumbnail"
-#~ msgstr "Miniatura mediana"
-
-#~ msgid "Small Custom Thumbnail"
-#~ msgstr "Miniatura personalizada pequeña"
-
-#~ msgid "Thumbnail"
-#~ msgstr "Miniatura"
-
-#~ msgid "Thumbnail Mixin"
-#~ msgstr "Miniatura Mixin"
-
 #~ msgid "A file is locked, the folder cannot be deleted."
 #~ msgstr "El archivo está bloqueado, la carpeta no se puede eliminar."
 
@@ -2308,17 +2215,5 @@ msgstr "res.company"
 #~ msgid "<span>DMS</span>"
 #~ msgstr "<span>Carpetas</span>"
 
-#~ msgid "A root directory has to have a root storage."
-#~ msgstr "Una carpeta principal debe tener un almacenamiento."
-
-#~ msgid "Allowed Model"
-#~ msgstr "Modelo permitido"
-
 #~ msgid "Demo"
 #~ msgstr "Demo"
-
-#~ msgid "Root Storage"
-#~ msgstr "Almacenamiento raíz"
-
-#~ msgid "Filename"
-#~ msgstr "Nombre de archivo"

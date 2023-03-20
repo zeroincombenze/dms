@@ -31,7 +31,6 @@ class File(models.Model):
         "dms.mixins.thumbnail",
         "mail.thread",
         "mail.activity.mixin",
-        "abstract.dms.mixin",
     ]
 
     _order = "name asc"
@@ -39,6 +38,8 @@ class File(models.Model):
     # ----------------------------------------------------------
     # Database
     # ----------------------------------------------------------
+
+    name = fields.Char(string="Filename", required=True, index=True)
 
     active = fields.Boolean(
         string="Archived",
@@ -56,28 +57,38 @@ class File(models.Model):
         required=True,
         index=True,
     )
-    # Override acording to defined in AbstractDmsMixin
+
     storage_id = fields.Many2one(
-        related="directory_id.storage_id",
+        related="directory_id.storage_id", readonly=True, store=True, prefetch=False,
+    )
+
+    is_hidden = fields.Boolean(
+        string="Storage is Hidden", related="storage_id.is_hidden", readonly=True
+    )
+
+    company_id = fields.Many2one(
+        related="storage_id.company_id",
+        comodel_name="res.company",
+        string="Company",
         readonly=True,
         store=True,
-        prefetch=False,
+        index=True,
     )
 
     path_names = fields.Char(
-        compute="_compute_path",
-        compute_sudo=True,
-        string="Path Names",
-        readonly=True,
-        store=False,
+        compute="_compute_path", string="Path Names", readonly=True, store=False
     )
 
     path_json = fields.Text(
-        compute="_compute_path",
-        compute_sudo=True,
-        string="Path Json",
-        readonly=True,
-        store=False,
+        compute="_compute_path", string="Path Json", readonly=True, store=False
+    )
+
+    color = fields.Integer(string="Color", default=0)
+
+    category_id = fields.Many2one(
+        comodel_name="dms.category",
+        context="{'dms_category_show_path': True}",
+        string="Category",
     )
 
     tag_ids = fields.Many2many(
@@ -85,7 +96,6 @@ class File(models.Model):
         relation="dms_file_tag_rel",
         column1="fid",
         column2="tid",
-        domain="['|', ('category_id', '=', False),('category_id', '=?', category_id)]",
         string="Tags",
     )
 
@@ -103,13 +113,13 @@ class File(models.Model):
         compute="_compute_extension", string="Extension", readonly=True, store=True
     )
 
-    mimetype = fields.Char(
+    res_mimetype = fields.Char(
         compute="_compute_mimetype", string="Type", readonly=True, store=True
     )
 
-    size = fields.Float(string="Size", readonly=True)
+    size = fields.Integer(string="Size", readonly=True)
 
-    checksum = fields.Char(string="Checksum/SHA1", readonly=True, index=True)
+    checksum = fields.Char(string="Checksum/SHA1", readonly=True, size=40, index=True)
 
     content_binary = fields.Binary(
         string="Content Binary", attachment=False, prefetch=False, invisible=True
@@ -137,19 +147,12 @@ class File(models.Model):
         attachment=True, string="Content File", prefetch=False, invisible=True
     )
 
-    # Extend inherited field(s)
-    image_1920 = fields.Image(compute="_compute_image_1920", store=True, readonly=False)
-
-    @api.depends("mimetype", "content")
-    def _compute_image_1920(self):
-        """Provide thumbnail automatically if possible."""
-        for one in self.filtered("mimetype"):
-            if one.mimetype.startswith("image/"):
-                one.image_1920 = one.content
-
     def check_access_rule(self, operation):
         self.mapped("directory_id").check_access_rule(operation)
         return super().check_access_rule(operation)
+
+    def get_human_size(self):
+        return human_size(self.size)
 
     def _compute_access_url(self):
         super()._compute_access_url()
@@ -182,12 +185,6 @@ class File(models.Model):
                             return True
         return res
 
-    res_model = fields.Char(
-        string="Linked attachments model", related="directory_id.res_model"
-    )
-    res_id = fields.Integer(
-        string="Linked attachments record ID", related="directory_id.res_id"
-    )
     attachment_id = fields.Many2one(
         comodel_name="ir.attachment",
         string="Attachment File",
@@ -195,9 +192,7 @@ class File(models.Model):
         invisible=True,
         ondelete="cascade",
     )
-
-    def get_human_size(self):
-        return human_size(self.size)
+    storage_id_save_type = fields.Selection(related="storage_id.save_type", store=False)
 
     # ----------------------------------------------------------
     # Helper
@@ -239,8 +234,8 @@ class File(models.Model):
         extensions = get_param("dms.forbidden_extensions", default="")
         return [extension.strip() for extension in extensions.split(",")]
 
-    def _get_icon_placeholder_name(self):
-        return self.extension and "file_%s.svg" % self.extension or ""
+    def _get_thumbnail_placeholder_name(self):
+        return self.extension and "file_%s.png" % self.extension or ""
 
     # ----------------------------------------------------------
     # Actions
@@ -376,18 +371,18 @@ class File(models.Model):
                 }
             )
 
-    @api.depends("name", "mimetype", "content")
+    @api.depends("name")
     def _compute_extension(self):
         for record in self:
-            record.extension = file.guess_extension(
-                record.name, record.mimetype, record.content
-            )
+            record.extension = file.guess_extension(record.name)
 
-    @api.depends("content")
+    @api.depends("name", "content")
     def _compute_mimetype(self):
         for record in self:
-            binary = base64.b64decode(record.content or "")
-            record.mimetype = guess_mimetype(binary)
+            binary = base64.b64decode(record.with_context({}).content or "")
+            record.res_mimetype = guess_mimetype(
+                binary, default="application/octet-stream"
+            )
 
     @api.depends("content_binary", "content_file", "attachment_id")
     def _compute_content(self):
@@ -422,14 +417,14 @@ class File(models.Model):
         selection = {value[0]: value[1] for value in values}
         for record in self:
             storage_type = record.storage_id.save_type
-            if storage_type == "attachment" or storage_type == record.save_type:
-                record.migration = selection.get(storage_type)
-                record.require_migration = False
-            else:
+            if storage_type != record.save_type:
                 storage_label = selection.get(storage_type)
                 file_label = selection.get(record.save_type)
                 record.migration = "{} > {}".format(file_label, storage_label)
                 record.require_migration = True
+            else:
+                record.migration = selection.get(storage_type)
+                record.require_migration = False
 
     # ----------------------------------------------------------
     # View
@@ -437,9 +432,24 @@ class File(models.Model):
 
     @api.onchange("category_id")
     def _change_category(self):
-        self.tag_ids = self.tag_ids.filtered(
+        res = {"domain": {"tag_ids": [("category_id", "=", False)]}}
+        if self.category_id:
+            res.update(
+                {
+                    "domain": {
+                        "tag_ids": [
+                            "|",
+                            ("category_id", "=", False),
+                            ("category_id", "child_of", self.category_id.id),
+                        ]
+                    }
+                }
+            )
+        tags = self.tag_ids.filtered(
             lambda rec: not rec.category_id or rec.category_id == self.category_id
         )
+        self.tag_ids = tags
+        return res
 
     # ----------------------------------------------------------
     # Constrains
@@ -503,17 +513,21 @@ class File(models.Model):
 
     def _create_model_attachment(self, vals):
         res_vals = vals.copy()
+        directory = False
+        directory_model = self.env["dms.directory"]
         if "directory_id" in res_vals:
-            directory_id = res_vals["directory_id"]
+            directory = directory_model.browse(res_vals["directory_id"])
         elif self.env.context.get("active_id"):
-            directory_id = self.env.context.get("active_id")
+            directory = directory_model.browse(self.env.context.get("active_id"))
         elif self.env.context.get("default_directory_id"):
-            directory_id = self.env.context.get("default_directory_id")
-        directory = self.env["dms.directory"].browse(directory_id)
+            directory = directory_model.browse(
+                self.env.context.get("default_directory_id")
+            )
         if (
-            directory.res_model
+            directory
+            and directory.res_model
             and directory.res_id
-            and directory.storage_id_save_type == "attachment"
+            and directory.storage_id.save_type == "attachment"
         ):
             attachment = (
                 self.env["ir.attachment"]
@@ -524,6 +538,7 @@ class File(models.Model):
                         "datas": vals["content"],
                         "res_model": directory.res_model,
                         "res_id": directory.res_id,
+                        "type": "binary",
                     }
                 )
             )
@@ -549,7 +564,7 @@ class File(models.Model):
     def create(self, vals_list):
         new_vals_list = []
         for vals in vals_list:
-            if "attachment_id" not in vals:
+            if "res_model" not in vals and "res_id" not in vals:
                 vals = self._create_model_attachment(vals)
             new_vals_list.append(vals)
         return super(File, self).create(new_vals_list)

@@ -1,4 +1,4 @@
-odoo.define("dms.DmsTreeView", function (require) {
+odoo.define("dms.DmsTreeView", function(require) {
     "use strict";
 
     var BasicView = require("web.BasicView");
@@ -14,7 +14,7 @@ odoo.define("dms.DmsTreeView", function (require) {
         template: "dms.DocumentTree",
         viewType: "dms_tree",
         config: _.extend({}, BasicView.prototype.config, {
-            Controller: DmsTreeController.Controller,
+            Controller: DmsTreeController,
             Renderer: DmsTreeRenderer,
         }),
         multi_record: true,

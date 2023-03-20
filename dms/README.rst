@@ -14,13 +14,13 @@ Document Management System
     :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
     :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fdms-lightgray.png?logo=github
-    :target: https://github.com/OCA/dms/tree/14.0/dms
+    :target: https://github.com/OCA/dms/tree/12.0/dms
     :alt: OCA/dms
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/dms-14-0/dms-14-0-dms
+    :target: https://translation.odoo-community.org/projects/dms-12-0/dms-12-0-dms
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
-    :target: https://runbot.odoo-community.org/runbot/292/14.0
+    :target: https://runbot.odoo-community.org/runbot/292/12.0
     :alt: Try me on Runbot
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
@@ -43,12 +43,9 @@ Installation
 Preview
 ~~~~~~~
 
-``mail_preview_base`` is required for DMS but it is recommended to install all
+`mail_preview_base` is required for DMS but it is recommended to install all
 the other `mail_preview` modules from `social` OCA repository
 in order to improve the preview of files.
-
-``python-magic`` library is recommended to be installed for having whole support
-to get proper file types and file preview.
 
 Configuration
 =============
@@ -59,14 +56,9 @@ To configure this module, you need to:
 #. Create a new document storage. You can choose between two options on `Save Type`:
     * `Database`: Store the files on the database as a field
     * `Attachment`: Store the files as attachments
-#. Next create an administrative access group. Go to *Configuration -> Access Groups*.
-    * Create a new group, name it appropriately, and turn on all three permissions (Create, Write and Unlink - Read is implied and always enabled).
-    * Add any other top-level administrative users to the group if needed (your user should already be there).
-    * You can create other groups in here later for fine grained access control.
 #. Afterwards go to *Documents -> Directories*.
 #. Create a new directory, mark it as root and select the previously created setting.
-    * Select the *Groups* tab and add your administrative group created above.
-#. On the Directory you can also add other access groups (created above) that will be able to:
+#. On the Directory you can also define the access groups that will be able to:
     * read
     * create
     * write
@@ -86,13 +78,6 @@ In order to achieve it you need to:
 
 You can check all the files that still needs to be migrated from all storages
 and migrate them manually on *Documents -> Configuration -> Migration*
-
-
-File Wizard Selection
-~~~~~~~~~~~~~~~~~~~~~
-
-There is an action called `action_dms_file_wizard_selector` to open a wizard to list files in kanban view.
-This can be used (example `dms_attachment_link` module) to add a button in kanban view with the action we need.
 
 Usage
 =====
@@ -123,7 +108,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/dms/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/dms/issues/new?body=module:%20dms%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/dms/issues/new?body=module:%20dms%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -171,6 +156,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/dms <https://github.com/OCA/dms/tree/14.0/dms>`_ project on GitHub.
+This module is part of the `OCA/dms <https://github.com/OCA/dms/tree/12.0/dms>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
